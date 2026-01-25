@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Rentals Ensenada | Electric Bike Tours & Rentals</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Stripe JS (For trust badges and future full integration) -->
+    <script src="https://js.stripe.com/v3/"></script>
+    
+    <!-- BRAND COLOR CONFIGURATION -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            light: '#fdba74',  // Light Orange
+                            DEFAULT: '#f97316', // VIBRANT ORANGE
+                            dark: '#ea580c',    // Darker Orange
+                        },
+                        dark: {
+                            DEFAULT: '#1f2937', // Gray-800
+                            lighter: '#374151', // Gray-700
+                            darkest: '#111827', // Gray-900
+                        },
+                        accent: {
+                            DEFAULT: '#f97316', 
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #f97316; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #ea580c; }
+        
+        /* Modal Transitions */
+        .modal {
+            transition: opacity 0.3s ease-in-out;
+            opacity: 0;
+            pointer-events: none;
+        }
+        .modal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+    </style>
+</head>
+<body class="bg-white text-dark-DEFAULT">
+
+    <!-- Navigation -->
+    <nav class="bg-white shadow-md fixed w-full z-50 border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <!-- Logo Area -->
+                <div class="flex-shrink-0 flex items-center">
+                    <!-- CORRECCIÓN LOGO: Cambiado de h-16 a h-12 para hacerlo más pequeño -->
+                    <img src="e rentals - logo.png" alt="E-Rentals Ensenada" class="h-12 w-auto object-contain" onerror="this.onerror=null; this.src='https://placehold.co/200x80/f97316/white?text=E-Rentals';">
+                </div>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="#experiences" class="text-dark-lighter hover:text-brand font-medium transition">Experiences</a>
+                    <a href="#how-it-works" class="text-dark-lighter hover:text-brand font-medium transition">How it Works</a>
+                    <a href="#stops" class="text-dark-lighter hover:text-brand font-medium transition">Stops</a>
+                    <a href="#location" class="text-dark-lighter hover:text-brand font-medium transition">Location</a>
+                    <a href="#faq" class="text-dark-lighter hover:text-brand font-medium transition">FAQ</a>
+                    <!-- WhatsApp Button -->
+                    <a href="https://wa.me/526462762114" target="_blank" class="bg-green-500 hover:bg-green-600 text-white px-5 py-2 rounded-full font-medium transition shadow-lg flex items-center gap-2">
+                        <i class="fab fa-whatsapp"></i> WhatsApp
+                    </a>
+                </div>
+
+                <!-- Mobile menu button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-dark-lighter hover:text-brand focus:outline-none">
+                        <i class="fas fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Panel -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#experiences" class="block px-3 py-2 rounded-md text-base font-medium text-dark-lighter hover:text-brand hover:bg-gray-50">Experiences</a>
+                <a href="#how-it-works" class="block px-3 py-2 rounded-md text-base font-medium text-dark-lighter hover:text-brand hover:bg-gray-50">How it Works</a>
+                <a href="#stops" class="block px-3 py-2 rounded-md text-base font-medium text-dark-lighter hover:text-brand hover:bg-gray-50">Stops</a>
+                <a href="#location" class="block px-3 py-2 rounded-md text-base font-medium text-dark-lighter hover:text-brand hover:bg-gray-50">Location</a>
+                <a href="#faq" class="block px-3 py-2 rounded-md text-base font-medium text-dark-lighter hover:text-brand hover:bg-gray-50">FAQ</a>
+                <a href="https://wa.me/526462762114" class="block w-full text-center mt-4 bg-green-500 text-white px-4 py-3 rounded-lg font-bold">
+                    WhatsApp Now
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="relative bg-dark-darkest pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
+        <div class="absolute inset-0 z-0">
+            <!-- CORRECCIÓN HERO 1: Se eliminó 'opacity-40' para que la imagen tenga su brillo original -->
+            <img src="erentals_hero_img 1.jpg" alt="Ensenada Coast" class="w-full h-full object-cover">
+            
+            <!-- CORRECCIÓN HERO 2: Gradiente ajustado. 80% opaco a la izquierda (texto), 30% a la derecha. Mucho más claro que antes. -->
+            <div class="absolute inset-0 bg-gradient-to-r from-dark-darkest/80 to-dark/30"></div>
+        </div>
+
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight drop-shadow-md">
+                Experience Ensenada’s <br/><span class="text-brand">Top-Rated</span> Electric Bike Tours
+            </h1>
+            <p class="text-xl md:text-2xl text-white/90 mb-10 max-w-3xl mx-auto drop-shadow-md">
+                Premium electric bike rentals and private guided tours built for cruise passengers, families, and groups.
+                <br><span class="text-brand-light font-semibold text-lg block mt-2 drop-shadow-sm"><i class="fas fa-walking"></i> Walking distance from the cruise port</span>
+            </p>
+            
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <!-- Trigger Booking Modal -->
+                <button onclick="openBooking('rental')" class="bg-brand hover:bg-brand-dark text-white text-lg px-8 py-4 rounded-full font-bold transition transform hover:scale-105 shadow-xl border-2 border-brand hover:border-brand-dark">
+                    Book Online
+                </button>
+                <a href="tel:+526462762114" class="bg-black/20 hover:bg-black/40 backdrop-blur-sm text-white border-2 border-white text-lg px-8 py-4 rounded-full font-bold transition transform hover:scale-105 shadow-xl flex items-center justify-center gap-2">
+                    <i class="fas fa-phone-alt"></i> Call Now
+                </a>
+            </div>
+            
+            <!-- Trust Badges -->
+            <div class="mt-16 flex flex-wrap justify-center gap-6 text-white text-sm md:text-base drop-shadow-sm">
+                <div class="flex items-center gap-2 opacity-90">
+                    <i class="fab fa-stripe text-3xl"></i>
+                    <span>Secure Payment</span>
+                </div>
+                 <div class="flex items-center gap-2 opacity-90">
+                    <i class="fab fa-cc-visa text-2xl"></i>
+                    <i class="fab fa-cc-mastercard text-2xl"></i>
+                    <i class="fab fa-cc-amex text-2xl"></i>
+                </div>
+            </div>
+
+            <!-- Hero Highlights -->
+            <div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-white text-sm md:text-base">
+                <div class="flex items-center justify-center gap-3 bg-black/40 backdrop-blur-md p-3 rounded-lg border border-white/20 shadow-lg">
+                    <i class="fas fa-ship text-brand text-xl"></i>
+                    <span>Built for Cruise Passengers</span>
+                </div>
+                <div class="flex items-center justify-center gap-3 bg-black/40 backdrop-blur-md p-3 rounded-lg border border-white/20 shadow-lg">
+                    <i class="fas fa-users text-brand text-xl"></i>
+                    <span>Private Tours Only</span>
+                </div>
+                <div class="flex items-center justify-center gap-3 bg-black/40 backdrop-blur-md p-3 rounded-lg border border-white/20 shadow-lg">
+                    <i class="fas fa-map-marked-alt text-brand text-xl"></i>
+                    <span>Choose Your Own Stops</span>
+                </div>
+                <div class="flex items-center justify-center gap-3 bg-black/40 backdrop-blur-md p-3 rounded-lg border border-white/20 shadow-lg">
+                    <i class="fas fa-certificate text-brand text-xl"></i>
+                    <span>English-Speaking Guides</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Choose Your Experience -->
+    <section id="experiences" class="py-20 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-dark-darkest">Choose Your Experience</h2>
+                <p class="mt-4 text-xl text-dark-lighter">Explore Ensenada your way.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+                <!-- Rental Card -->
+                <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100 hover:shadow-2xl transition duration-300 flex flex-col group">
+                    <div class="bg-gray-200 h-48 relative overflow-hidden">
+                        <img src="ebike_rental 1.jpg" alt="E-Bike Rental" class="w-full h-full object-cover transition transform group-hover:scale-110">
+                        <div class="absolute top-4 right-4 bg-white px-3 py-1 rounded-full text-sm font-bold text-dark-darkest shadow">$25 / hour</div>
+                    </div>
+                    <div class="p-8 flex-1 flex flex-col">
+                        <h3 class="text-2xl font-bold text-dark-darkest mb-2">Electric Bike Rental</h3>
+                        <p class="text-brand font-bold mb-4">Explore at your own pace</p>
+                        <p class="text-dark-lighter mb-6">Best for: Independent explorers, couples, quick port visits, flexible schedules.</p>
+                        
+                        <ul class="space-y-3 mb-8 flex-1 text-dark">
+                            <li class="flex items-start"><i class="fas fa-check text-brand mt-1 mr-2"></i><span>Premium E-Bike</span></li>
+                            <li class="flex items-start"><i class="fas fa-check text-brand mt-1 mr-2"></i><span>Helmet & Bike Lock</span></li>
+                            <li class="flex items-start"><i class="fas fa-check text-brand mt-1 mr-2"></i><span>Local Route Map</span></li>
+                            <li class="flex items-start"><i class="fas fa-check text-brand mt-1 mr-2"></i><span>Safety Briefing</span></li>
+                        </ul>
+
+                        <!-- Updated Button to Trigger Modal -->
+                        <button onclick="openBooking('rental')" class="block w-full text-center bg-dark hover:bg-dark-darkest text-white font-bold py-3 rounded-xl transition">
+                            Rent an E-Bike
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Private Tour Card -->
+                <div class="bg-white rounded-2xl shadow-xl overflow-hidden border-2 border-brand transform md:-translate-y-4 hover:shadow-2xl transition duration-300 flex flex-col relative group">
+                    <div class="absolute top-0 left-0 w-full bg-brand text-white text-center text-sm font-bold py-1 uppercase tracking-wide">Most Popular</div>
+                    <div class="bg-gray-200 h-48 mt-7 relative overflow-hidden">
+                        <img src="guidetour_erentals 1.jpg" alt="Guided Tour" class="w-full h-full object-cover transition transform group-hover:scale-110">
+                        <div class="absolute top-4 right-4 bg-brand text-white px-3 py-1 rounded-full text-sm font-bold shadow">$60 · 2 Hours</div>
+                    </div>
+                    <div class="p-8 flex-1 flex flex-col">
+                        <h3 class="text-2xl font-bold text-dark-darkest mb-2">Private Guided E-Bike Tour</h3>
+                        <p class="text-brand font-bold mb-4">Discover Ensenada with a local guide</p>
+                        <p class="text-dark-lighter mb-6">Great for: Cruise passengers, families, groups, first-time visitors who want a curated experience.</p>
+                        
+                        <ul class="space-y-3 mb-8 flex-1 text-dark">
+                            <li class="flex items-start"><i class="fas fa-check text-brand mt-1 mr-2"></i><span><strong>Private Tour</strong> (Just your group)</span></li>
+                            <li class="flex items-start"><i class="fas fa-check text-brand mt-1 mr-2"></i><span>Not a cookie-cutter tour</span></li>
+                            <li class="flex items-start"><i class="fas fa-check text-brand mt-1 mr-2"></i><span>Choose your own stops</span></li>
+                            <li class="flex items-start"><i class="fas fa-check text-brand mt-1 mr-2"></i><span>English-speaking local guide</span></li>
+                        </ul>
+
+                         <!-- Updated Button to Trigger Modal -->
+                        <button onclick="openBooking('tour')" class="block w-full text-center bg-brand hover:bg-brand-dark text-white font-bold py-3 rounded-xl transition shadow-lg shadow-brand/20">
+                            Book a Private Tour
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works & Included -->
+    <section id="how-it-works" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                
+                <!-- Steps -->
+                <div>
+                    <h2 class="text-3xl font-bold text-dark-darkest mb-8">How the Private Tour Works</h2>
+                    <div class="space-y-8">
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-brand/10 flex items-center justify-center text-brand font-bold border border-brand/20">1</div>
+                            <div>
+                                <h4 class="text-lg font-bold text-dark">Check-in & Safety Briefing</h4>
+                                <p class="text-dark-lighter">We fit the bike to you and ensure you are comfortable.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-brand/10 flex items-center justify-center text-brand font-bold border border-brand/20">2</div>
+                            <div>
+                                <h4 class="text-lg font-bold text-dark">You Choose Your Stops</h4>
+                                <p class="text-dark-lighter">We guide and optimize the route based on your preferences.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-brand/10 flex items-center justify-center text-brand font-bold border border-brand/20">3</div>
+                            <div>
+                                <h4 class="text-lg font-bold text-dark">Ride a Smooth, Scenic Loop</h4>
+                                <p class="text-dark-lighter">Relaxed pace, photo moments, and local stories.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-brand/10 flex items-center justify-center text-brand font-bold border border-brand/20">4</div>
+                            <div>
+                                <h4 class="text-lg font-bold text-dark">Return on Time</h4>
+                                <p class="text-dark-lighter">Designed around cruise schedules for stress-free travel.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- What's Included Box -->
+                <div class="bg-gray-50 p-8 rounded-2xl border border-gray-100 shadow-sm relative overflow-hidden">
+                    <div class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-brand/10 rounded-full blur-xl"></div>
+                    <h3 class="text-2xl font-bold text-dark-darkest mb-6 relative z-10">What's Included?</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 relative z-10">
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-hard-hat text-brand"></i>
+                            <span class="text-dark-lighter">Helmet</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-lock text-brand"></i>
+                            <span class="text-dark-lighter">Bike lock</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-map text-brand"></i>
+                            <span class="text-dark-lighter">Local route map</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-ticket-alt text-brand"></i>
+                            <span class="text-dark-lighter">Local coupons</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-user-shield text-brand"></i>
+                            <span class="text-dark-lighter">Safety briefing</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <i class="fas fa-users text-brand"></i>
+                            <span class="text-dark-lighter">Local Guides</span>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8 p-4 bg-white rounded-lg border-l-4 border-brand text-dark-lighter text-sm shadow-sm">
+                        <i class="fas fa-heart text-brand mr-2"></i> <strong>Why E-Rentals?</strong> Premium bikes, safety-focused, clear pricing, and satisfaction-first service.
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Choose Your Stops Section -->
+    <section id="stops" class="py-20 bg-dark-darkest text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <span class="text-brand font-bold uppercase tracking-wider text-sm">Customize Your Tour</span>
+                <h2 class="text-3xl md:text-4xl font-bold mt-2">Choose Your Stops</h2>
+                <p class="mt-4 text-gray-400 max-w-2xl mx-auto">Build your perfect Ensenada experience. Select from these popular options.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Category 1 -->
+                <div class="bg-white/5 rounded-xl p-6 border border-white/10 hover:border-brand transition group">
+                    <div class="flex items-center gap-3 mb-4">
+                        <i class="fas fa-camera text-brand text-xl group-hover:text-white transition"></i>
+                        <h3 class="font-bold text-lg">Scenic & Photo</h3>
+                    </div>
+                    <p class="text-xs text-gray-400 mb-4 uppercase">Choose up to 2</p>
+                    <ul class="space-y-2 text-gray-300">
+                        <li class="flex items-center"><span class="w-1.5 h-1.5 bg-brand rounded-full mr-2"></span> Ensenada Malecón</li>
+                        <li class="flex items-center"><span class="w-1.5 h-1.5 bg-brand rounded-full mr-2"></span> Ensenada Sign</li>
+                        <li class="flex items-center"><span class="w-1.5 h-1.5 bg-brand rounded-full mr-2"></span> Harbor & Port Views</li>
+                    </ul>
+                </div>
+
+                <!-- Category 2 -->
+                <div class="bg-white/5 rounded-xl p-6 border border-white/10 hover:border-brand transition group">
+                    <div class="flex items-center gap-3 mb-4">
+                        <i class="fas fa-landmark text-brand text-xl group-hover:text-white transition"></i>
+                        <h3 class="font-bold text-lg">History & Culture</h3>
+                    </div>
+                    <p class="text-xs text-gray-400 mb-4 uppercase">Choose up to 2</p>
+                    <ul class="space-y-2 text-gray-300">
+                        <li class="flex items-center"><span class="w-1.5 h-1.5 bg-brand rounded-full mr-2"></span> Hussong’s Cantina</li>
+                        <li class="flex items-center"><span class="w-1.5 h-1.5 bg-brand rounded-full mr-2"></span> Riviera Cultural Center</li>
+                        <li class="flex items-center"><span class="w-1.5 h-1.5 bg-brand rounded-full mr-2"></span> Civic Center</li>
+                    </ul>
+                </div>
+
+                <!-- Category 3 -->
+                <div class="bg-white/5 rounded-xl p-6 border border-white/10 hover:border-brand transition group">
+                    <div class="flex items-center gap-3 mb-4">
+                        <i class="fas fa-shopping-bag text-brand text-xl group-hover:text-white transition"></i>
+                        <h3 class="font-bold text-lg">Shopping</h3>
+                    </div>
+                    <p class="text-xs text-gray-400 mb-4 uppercase">Choose up to 1</p>
+                    <ul class="space-y-2 text-gray-300">
+                        <li class="flex items-center"><span class="w-1.5 h-1.5 bg-brand rounded-full mr-2"></span> Mercado Negro</li>
+                        <li class="flex items-center"><span class="w-1.5 h-1.5 bg-brand rounded-full mr-2"></span> Calle Primera</li>
+                        <li class="flex items-center"><span class="w-1.5 h-1.5 bg-brand rounded-full mr-2"></span> Plaza Santo Tomás</li>
+                    </ul>
+                </div>
+
+                <!-- Category 4 -->
+                <div class="bg-white/5 rounded-xl p-6 border border-white/10 hover:border-brand transition group">
+                    <div class="flex items-center gap-3 mb-4">
+                        <i class="fas fa-utensils text-brand text-xl group-hover:text-white transition"></i>
+                        <h3 class="font-bold text-lg">Food (Optional)</h3>
+                    </div>
+                    <p class="text-xs text-gray-400 mb-4 uppercase">Brief stop</p>
+                    <ul class="space-y-2 text-gray-300">
+                        <li class="flex items-center"><span class="w-1.5 h-1.5 bg-brand rounded-full mr-2"></span> La Guerrerense</li>
+                        <li class="flex items-center"><span class="w-1.5 h-1.5 bg-brand rounded-full mr-2"></span> El Güero / El Coyote</li>
+                        <li class="flex items-center"><span class="w-1.5 h-1.5 bg-brand rounded-full mr-2"></span> Starbucks / Local Cafe</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <p class="text-center text-gray-500 text-sm mt-8 italic">Note: Food stops are brief and time-controlled. Alcohol consumption is not permitted during tours.</p>
+        </div>
+    </section>
+
+    <!-- Location Section -->
+    <section id="location" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="order-2 md:order-1 h-80 bg-gray-200 rounded-2xl overflow-hidden shadow-lg relative border border-gray-100">
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3388.986617551465!2d-116.6268!3d31.8667!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzHCsDUyJzAwLjAiTiAxMTbCsDM3JzM2LjUiVw!5e0!3m2!1sen!2smx!4v1600000000000!5m2!1sen!2smx" 
+                        width="100%" 
+                        height="100%" 
+                        style="border:0;" 
+                        allowfullscreen="" 
+                        loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade"
+                        title="E-Rentals Location">
+                    </iframe>
+                </div>
+                <div class="order-1 md:order-2">
+                    <span class="bg-brand/10 text-brand px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide">Walk-ins Welcome</span>
+                    <h2 class="text-3xl font-bold text-dark-darkest mt-4 mb-4">Find Us Downtown</h2>
+                    <p class="text-lg text-dark-lighter mb-6">We are located within <strong>walking distance</strong> from the cruise port terminal.</p>
+                    
+                    <div class="flex items-start gap-4 mb-8">
+                        <div class="bg-gray-50 p-3 rounded-lg text-brand">
+                            <i class="fas fa-map-marker-alt text-2xl"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-dark">Address</h4>
+                            <p class="text-dark-lighter">Avenida Castillo, La Marina, Zona Centro,<br>22800 Ensenada, B.C., México</p>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4">
+                        <a href="https://maps.google.com" target="_blank" class="bg-white border-2 border-gray-200 hover:border-brand text-dark hover:text-brand px-6 py-2 rounded-lg font-bold transition">
+                            Open in Maps
+                        </a>
+                        <a href="https://maps.google.com" target="_blank" class="bg-brand hover:bg-brand-dark text-white px-6 py-2 rounded-lg font-bold transition">
+                            Get Directions
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="py-20 bg-gray-50">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-bold text-center text-dark-darkest mb-12">Frequently Asked Questions</h2>
+            
+            <div class="space-y-4">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden faq-item">
+                    <button class="w-full px-6 py-4 text-left flex justify-between items-center focus:outline-none hover:bg-gray-50 transition" onclick="toggleFaq(this)">
+                        <span class="font-semibold text-dark">Is this tour good for cruise passengers?</span>
+                        <i class="fas fa-chevron-down text-gray-400 transition-transform"></i>
+                    </button>
+                    <div class="hidden px-6 pb-4 text-dark-lighter bg-gray-50/50">
+                        Yes. Our tours are built specifically for cruise schedules and planned to ensure a smooth, on-time return to the port.
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden faq-item">
+                    <button class="w-full px-6 py-4 text-left flex justify-between items-center focus:outline-none hover:bg-gray-50 transition" onclick="toggleFaq(this)">
+                        <span class="font-semibold text-dark">Do I need experience riding an e-bike?</span>
+                        <i class="fas fa-chevron-down text-gray-400 transition-transform"></i>
+                    </button>
+                    <div class="hidden px-6 pb-4 text-dark-lighter bg-gray-50/50">
+                        No. E-bikes are easy to ride, and we provide a full safety briefing before every ride to ensure you are comfortable.
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden faq-item">
+                    <button class="w-full px-6 py-4 text-left flex justify-between items-center focus:outline-none hover:bg-gray-50 transition" onclick="toggleFaq(this)">
+                        <span class="font-semibold text-dark">Is the guided tour private?</span>
+                        <i class="fas fa-chevron-down text-gray-400 transition-transform"></i>
+                    </button>
+                    <div class="hidden px-6 pb-4 text-dark-lighter bg-gray-50/50">
+                        Yes — private tours only. It’s just your group and your guide. No strangers.
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden faq-item">
+                    <button class="w-full px-6 py-4 text-left flex justify-between items-center focus:outline-none hover:bg-gray-50 transition" onclick="toggleFaq(this)">
+                        <span class="font-semibold text-dark">Can we drink alcohol during the tour?</span>
+                        <i class="fas fa-chevron-down text-gray-400 transition-transform"></i>
+                    </button>
+                    <div class="hidden px-6 pb-4 text-dark-lighter bg-gray-50/50">
+                        No. For your safety and the safety of others, alcohol consumption is not permitted during the bike tours.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA & Footer -->
+    <footer class="bg-dark-darkest text-white pt-16 pb-8 border-t border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-gradient-to-r from-dark to-dark-lighter rounded-2xl p-8 md:p-12 text-center mb-16 shadow-2xl relative overflow-hidden border border-white/5">
+                <div class="absolute inset-0 bg-brand/5"></div>
+                <div class="relative z-10">
+                    <h2 class="text-3xl font-bold mb-4">Ready to Ride?</h2>
+                    <p class="text-white/90 mb-8 max-w-2xl mx-auto">Book your ride today or message us for more information. Walk-ins are welcome at our downtown location!</p>
+                    <div class="flex flex-col sm:flex-row justify-center gap-4">
+                        <a href="https://wa.me/526462762114" class="bg-brand hover:bg-brand-dark text-white px-8 py-3 rounded-full font-bold transition flex items-center justify-center gap-2 shadow-lg">
+                            <i class="fab fa-whatsapp"></i> Message Us
+                        </a>
+                         <!-- Trigger Booking Modal -->
+                        <button onclick="openBooking('rental')" class="bg-white text-dark hover:bg-gray-100 px-8 py-3 rounded-full font-bold transition shadow-lg">
+                            Book Online
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8 pt-8 text-center md:text-left">
+                <div>
+                    <h3 class="text-xl font-bold mb-4 text-white">E-Rentals Ensenada</h3>
+                    <p class="text-gray-400 mb-4">Premium electric bike rentals and private guided tours in Ensenada, Mexico.</p>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4 text-white">Contact</h4>
+                    <p class="text-gray-400"><a href="tel:+526462762114" class="hover:text-brand transition">+52 646 276 2114</a></p>
+                    <p class="text-gray-400"><a href="https://www.erentals.mx" class="hover:text-brand transition">www.erentals.mx</a></p>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4 text-white">Location</h4>
+                    <p class="text-gray-400">Avenida Castillo, La Marina, Zona Centro, 22800 Ensenada, B.C., México</p>
+                </div>
+            </div>
+            
+            <div class="border-t border-white/10 mt-12 pt-8 text-center text-gray-500 text-sm">
+                &copy; 2024 E-Rentals Ensenada. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- BOOKING MODAL (NEW) -->
+    <div id="booking-modal" class="modal fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden relative transform transition-all scale-100">
+            <!-- Modal Header -->
+            <div class="bg-dark-darkest p-4 flex justify-between items-center text-white">
+                <h3 class="font-bold text-lg" id="modal-title">Complete Your Booking</h3>
+                <button onclick="closeBooking()" class="text-gray-400 hover:text-white focus:outline-none">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="p-6">
+                <div class="space-y-4">
+                    <!-- Product Info -->
+                    <div class="bg-gray-50 p-3 rounded-lg border border-gray-100">
+                        <p class="text-xs text-gray-500 uppercase tracking-wide">Selected Experience</p>
+                        <p class="font-bold text-dark text-lg" id="modal-product-name">E-Bike Rental</p>
+                        <p class="text-brand font-semibold" id="modal-product-price">$25 / hour</p>
+                    </div>
+
+                    <!-- Date & Time -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 mb-1">Date</label>
+                            <input type="date" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-brand">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 mb-1">Time</label>
+                            <select class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-brand">
+                                <option>09:00 AM</option>
+                                <option>10:00 AM</option>
+                                <option>11:00 AM</option>
+                                <option>12:00 PM</option>
+                                <option>01:00 PM</option>
+                                <option>02:00 PM</option>
+                                <option>03:00 PM</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Quantity & Duration (Dynamic) -->
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-700 mb-1">Guests / Bikes</label>
+                            <select id="modal-quantity" onchange="calculateTotal()" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-brand">
+                                <option value="1">1 Person</option>
+                                <option value="2">2 People</option>
+                                <option value="3">3 People</option>
+                                <option value="4">4 People</option>
+                                <option value="5">5 People</option>
+                                <option value="6">6+ (Group)</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Duration (Only visible for rentals) -->
+                        <div id="duration-container">
+                            <label class="block text-xs font-bold text-gray-700 mb-1">Duration</label>
+                            <select id="modal-duration" onchange="calculateTotal()" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-brand">
+                                <option value="1">1 Hour</option>
+                                <option value="2">2 Hours</option>
+                                <option value="3">3 Hours</option>
+                                <option value="4">4 Hours</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Total Price -->
+                    <div class="border-t border-gray-100 pt-4 flex justify-between items-center mt-4">
+                        <span class="text-gray-600 font-medium">Total</span>
+                        <span class="text-2xl font-bold text-dark-darkest" id="modal-total">$25.00</span>
+                    </div>
+                </div>
+
+                <!-- Pay Button -->
+                <button onclick="processPayment()" class="w-full bg-brand hover:bg-brand-dark text-white font-bold py-4 rounded-xl mt-6 transition shadow-lg flex justify-center items-center gap-2">
+                    <span>Pay with Card</span>
+                    <i class="fab fa-stripe text-xl"></i>
+                </button>
+                
+                <p class="text-center text-xs text-gray-400 mt-3">
+                    <i class="fas fa-lock text-xs"></i> Payments secured by Stripe
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // Mobile Menu Toggle
+        const btn = document.getElementById('mobile-menu-btn');
+        const menu = document.getElementById('mobile-menu');
+
+        btn.addEventListener('click', () => {
+            menu.classList.toggle('hidden');
+        });
+
+        // FAQ Toggle
+        function toggleFaq(button) {
+            const content = button.nextElementSibling;
+            const icon = button.querySelector('i');
+            content.classList.toggle('hidden');
+            if (content.classList.contains('hidden')) {
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        /* --- BOOKING LOGIC --- */
+        const modal = document.getElementById('booking-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const productName = document.getElementById('modal-product-name');
+        const productPrice = document.getElementById('modal-product-price');
+        const durationContainer = document.getElementById('duration-container');
+        const quantityInput = document.getElementById('modal-quantity');
+        const durationInput = document.getElementById('modal-duration');
+        const totalDisplay = document.getElementById('modal-total');
+        
+        let currentType = 'rental'; // 'rental' or 'tour'
+
+        function openBooking(type) {
+            currentType = type;
+            modal.classList.add('active'); // Show modal
+
+            if (type === 'rental') {
+                productName.textContent = "Electric Bike Rental";
+                productPrice.textContent = "$25 / hour per bike";
+                durationContainer.style.display = 'block'; // Show duration input
+            } else {
+                productName.textContent = "Private Guided E-Bike Tour";
+                productPrice.textContent = "$60 / person (2 Hours)";
+                durationContainer.style.display = 'none'; // Hide duration (fixed)
+            }
+            calculateTotal();
+        }
+
+        function closeBooking() {
+            modal.classList.remove('active');
+        }
+
+        function calculateTotal() {
+            const quantity = parseInt(quantityInput.value);
+            const duration = parseInt(durationInput.value);
+            let total = 0;
+
+            if (currentType === 'rental') {
+                // Calculation: $25 * Qty * Duration
+                total = 25 * quantity * duration;
+            } else {
+                // Calculation: $60 * Qty (Fixed 2 hours)
+                total = 60 * quantity;
+            }
+
+            totalDisplay.textContent = '$' + total.toFixed(2);
+        }
+
+        function processPayment() {
+            // INSTRUCTIONS FOR OWNER:
+            // Replace the alerts below with your actual Stripe Payment Links.
+            // You can create "Payment Links" in your Stripe Dashboard for specific amounts or products.
+            
+            // Example redirection:
+            // window.location.href = 'https://buy.stripe.com/your_link_here';
+
+            const total = totalDisplay.textContent;
+            
+            // Simulating redirection for demo purposes
+            const button = document.querySelector('#booking-modal button.bg-brand');
+            const originalText = button.innerHTML;
+            
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            button.disabled = true;
+
+            setTimeout(() => {
+                // In a real scenario, this is where you redirect to Stripe
+                alert(`Redirecting to Stripe Secure Checkout...\n\nTotal to Pay: ${total}\n\n(Note: In the live version, this will open your Stripe Payment Link)`);
+                
+                button.innerHTML = originalText;
+                button.disabled = false;
+                closeBooking();
+            }, 1500);
+        }
+
+        // Close modal if clicking outside
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                closeBooking();
+            }
+        }
+    </script>
+</body>
+</html>
