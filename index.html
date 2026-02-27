@@ -73,10 +73,9 @@
     <nav class="bg-white shadow-md fixed w-full z-50 border-b border-gray-100">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-20 items-center">
-                <!-- Logo Area -->
-                <div class="flex-shrink-0 flex items-center">
-                    <!-- CORRECCIÓN LOGO -->
-                    <img src="e rentals - logo.png" alt="E-Rentals Ensenada" class="h-12 w-auto object-contain" onerror="this.onerror=null; this.src='https://placehold.co/200x80/f97316/white?text=E-Rentals';">
+                <!-- Logo Area: Hecho más pequeño y con límite de ancho para celulares -->
+                <div class="flex-shrink-0 flex items-center overflow-hidden pr-2">
+                    <img src="e rentals - logo.png" alt="E-Rentals Ensenada" class="h-8 md:h-10 max-w-[160px] md:max-w-none w-auto object-contain" onerror="this.onerror=null; this.src='https://placehold.co/200x80/f97316/white?text=E-Rentals';">
                 </div>
                 
                 <!-- Desktop Menu -->
@@ -94,29 +93,31 @@
                         </button>
                         <!-- Dropdown Menu -->
                         <div class="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 border border-gray-100 flex flex-col overflow-hidden">
-                            <!-- Link USA with prefilled English text -->
+                            <!-- Link USA -->
                             <a href="https://wa.me/16194835269?text=Hello!%20I%20am%20contacting%20you%20from%20your%20website%20and%20I%20would%20like%20more%20information." target="_blank" class="px-4 py-3 hover:bg-gray-50 flex items-center gap-3 text-dark-lighter hover:text-brand font-medium border-b border-gray-50 transition">
                                 <span class="text-xl">🇺🇸</span> USA (+1)
                             </a>
-                            <!-- Link MX with prefilled Spanish text -->
+                            <!-- Link MX -->
                             <a href="https://wa.me/526462762114?text=%C2%A1Hola!%20Los%20contacto%20desde%20su%20p%C3%A1gina%20web%20y%20me%20gustar%C3%ADa%20m%C3%A1s%20informaci%C3%B3n." target="_blank" class="px-4 py-3 hover:bg-gray-50 flex items-center gap-3 text-dark-lighter hover:text-brand font-medium transition">
                                 <span class="text-xl">🇲🇽</span> MX (+52)
                             </a>
                         </div>
                     </div>
 
-                    <!-- Language Toggle Button -->
-                    <button onclick="toggleLanguage()" id="lang-toggle-btn" class="text-dark-lighter hover:text-brand font-bold transition px-3 py-1.5 border-2 border-gray-200 rounded-lg hover:border-brand flex items-center gap-2 whitespace-nowrap">
-                        <span class="text-lg">🇲🇽</span> Idioma
+                    <!-- Language Toggle Button (Desktop: Solo Bandera) -->
+                    <button onclick="toggleLanguage()" id="lang-toggle-btn" class="text-dark-lighter hover:text-brand transition p-2 border-2 border-gray-200 rounded-lg hover:border-brand flex items-center justify-center" title="Cambiar Idioma / Change Language">
+                        <span class="text-2xl leading-none">🇲🇽</span>
                     </button>
                 </div>
 
-                <!-- Mobile menu button -->
-                <div class="md:hidden flex items-center gap-3">
-                    <button onclick="toggleLanguage()" id="mobile-lang-btn" class="text-dark-lighter font-bold border-2 border-gray-200 rounded-lg px-2 py-1 text-sm flex items-center gap-1 whitespace-nowrap">
-                        <span class="text-base">🇲🇽</span> Idioma
+                <!-- Mobile menu buttons -->
+                <div class="md:hidden flex items-center gap-2">
+                    <!-- Language Toggle Button (Mobile: Solo Bandera) -->
+                    <button onclick="toggleLanguage()" id="mobile-lang-btn" class="text-dark-lighter transition p-1.5 border-2 border-gray-200 rounded-lg flex items-center justify-center">
+                        <span class="text-xl leading-none">🇲🇽</span>
                     </button>
-                    <button id="mobile-menu-btn" class="text-dark-lighter hover:text-brand focus:outline-none ml-1">
+                    <!-- Hamburguesa -->
+                    <button id="mobile-menu-btn" class="text-dark-lighter hover:text-brand focus:outline-none p-1">
                         <i class="fas fa-bars text-2xl"></i>
                     </button>
                 </div>
@@ -144,7 +145,6 @@
     <!-- Hero Section -->
     <header class="relative bg-dark-darkest pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
         <div class="absolute inset-0 z-0">
-            <!-- HERO IMAGE -->
             <img src="erentals_hero_img 1.jpg" alt="Ensenada Coast" class="w-full h-full object-cover">
             <div class="absolute inset-0 bg-gradient-to-r from-dark-darkest/80 to-dark/30"></div>
         </div>
@@ -737,16 +737,16 @@
                 }
             });
 
-            // Update toggle buttons themselves
+            // Update toggle buttons themselves (SOLO BANDERA)
             const btnDesktop = document.getElementById('lang-toggle-btn');
             const btnMobile = document.getElementById('mobile-lang-btn');
             
             if (currentLang === 'en') {
-                btnDesktop.innerHTML = '<span class="text-lg">🇲🇽</span> Idioma';
-                btnMobile.innerHTML = '<span class="text-base">🇲🇽</span> Idioma';
+                btnDesktop.innerHTML = '<span class="text-2xl leading-none">🇲🇽</span>';
+                btnMobile.innerHTML = '<span class="text-xl leading-none">🇲🇽</span>';
             } else {
-                btnDesktop.innerHTML = '<span class="text-lg">🇺🇸</span> Language';
-                btnMobile.innerHTML = '<span class="text-base">🇺🇸</span> Language';
+                btnDesktop.innerHTML = '<span class="text-2xl leading-none">🇺🇸</span>';
+                btnMobile.innerHTML = '<span class="text-xl leading-none">🇺🇸</span>';
             }
             
             // Re-render modal text if it's currently open
